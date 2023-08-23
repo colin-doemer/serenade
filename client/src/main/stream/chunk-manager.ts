@@ -467,7 +467,7 @@ export default class ChunkManager {
         partial: false,
         speakingVolume: 0,
         suggestion: "",
-        statusText: listening ? "Listening" : "Paused",
+        statusText: listening ? "Let's go!" : "Paused",
       },
       [this.mainWindow, this.miniModeWindow]
     );

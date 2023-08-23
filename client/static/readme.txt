@@ -1,0 +1,1 @@
+copied local folder from C:\Users\colin\AppData\Local\Programs\Serenade\resources\app\static
