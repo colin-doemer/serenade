@@ -41,7 +41,11 @@ const TitleBarComponent: React.FC<{ miniMode: boolean }> = ({ miniMode }) => {
   return process.platform != "darwin" ? (
     <div className="w-full h-[24px] absolute z-10 top-0 left-0">
       <div className="w-full h-full flex">
-        <div className="flex-1 draggable" />
+        <div className="flex-1 draggable mt-0.5 ml-2">
+          <a className="block font-medium drop-shadow-sm text-sm text-violet-600 text-opacity-50 dark:text-violet-400 dark:text-opacity-50">
+            hands-off-coding
+          </a>
+        </div>
         <div>
           <a
             href="#"
