@@ -6,7 +6,6 @@ import Settings from "./settings";
 export default class Log {
   private errorStream?: fs.WriteStream;
   private verboseStream?: fs.WriteStream;
-  private handsOffCodingStream?: fs.WriteStream;
 
   constructor(private settings: Settings) {}
 
@@ -33,15 +32,5 @@ export default class Log {
     const data = `${includeDate ? Date.now() + " " : ""}${message}`;
     console.log(data);
     this.verboseStream.write(`${data}\n`);
-  }
-  
-  logHandsOffCoding(message: string, includeDate: boolean = true) {
-    if (!this.handsOffCodingStream) {
-      this.handsOffCodingStream = fs.createWriteStream(path.join(os.homedir(), ".serenade", "hands-off-coding.log"));
-    }
-
-    const data = `${includeDate ? Date.now() + " " : ""}${message}`;
-    console.log(data);
-    this.handsOffCodingStream.write(`${data}\n`);
   }
 }

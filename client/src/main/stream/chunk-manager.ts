@@ -14,7 +14,6 @@ import Stream from "./stream";
 import { Chunk, ChunkQueue } from "./chunk-queue";
 import { core } from "../../gen/core";
 import { commandTypeToString, isMetaResponse, isValidAlternative } from "../../shared/alternatives";
-import * as net from 'net';
 
 interface Request {
   requestType: "audio" | "editor" | "endpoint" | "initialize";
@@ -47,10 +46,8 @@ export default class ChunkManager {
   private speaking: boolean = false;
   private timeToWaitBeforeClassifyingAsNoise: number = 200;
   private timeToWaitBeforeStartingNewCommand: number = 5000;
-  private port: number = 12796;
 
   listening: boolean = false;
-  socket: net.Socket | null = null;
 
   constructor(
     private active: Active,
@@ -66,9 +63,7 @@ export default class ChunkManager {
     private miniModeWindow: MiniModeWindow,
     private settings: Settings,
     private stream: Stream
-  ) {
-    this.initializeTCPServer();
-  }
+  ) {}
 
   private async enqueue(request: Request, flush: boolean = true) {
     this.buffer.push(request);
@@ -466,17 +461,13 @@ export default class ChunkManager {
     }
 
     this.listening = listening;
-    if (this.socket) {
-      this.log.logHandsOffCoding(`Sending LISTENING:${listening ? 'TRUE' : 'FALSE'}`);
-      this.socket.write(`LISTENING:${listening ? 'TRUE' : 'FALSE'}\n`);
-    }
     this.bridge.setState(
       {
         listening,
         partial: false,
         speakingVolume: 0,
         suggestion: "",
-        statusText: listening ? "Listening" : "Paused",
+        statusText: listening ? "Let's go!" : "Paused",
       },
       [this.mainWindow, this.miniModeWindow]
     );
@@ -510,37 +501,5 @@ export default class ChunkManager {
         this.speaking = false;
       }
     }, 1);
-  }
-  
-  private initializeTCPServer() {
-    const server = net.createServer((socket) => {
-      this.socket = socket;
-      socket.on('data', (data: Buffer) => {
-        this.log.logHandsOffCoding(`Data received: ${data.toString().trim()}`);
-        const command: string[] = data.toString().trim().split(':');
-        if (command.length < 1) {
-          this.log.logHandsOffCoding(`Invalid command: ${data.toString()}`);
-        }
-        switch(command[0]) {
-          case 'LISTENING': {
-            if (command.length < 2) {
-              socket.write(`LISTENING:${this.listening ? 'TRUE' : 'FALSE'}`);
-            } else {
-              const newState: boolean = command[1] === 'TRUE';
-              this.toggle(newState);
-            }
-            break;
-          }
-          default: {
-            this.log.logHandsOffCoding(`Unknown command: ${command[0]}`);
-            break;
-          }
-        }
-      });
-    });
-  
-    server.listen(this.port, () => {
-      this.log.logVerbose(`Server listening on port ${this.port}`);
-    });
   }
 }
