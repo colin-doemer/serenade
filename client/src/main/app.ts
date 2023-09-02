@@ -28,6 +28,7 @@ import System from "./execute/system";
 import TextInputWindow from "./windows/text-input";
 import Window from "./windows/window";
 import * as examples from "./examples";
+import HandsOffCoding from "./hands-off-coding";
 const { SpeechRecorder } = require("speech-recorder");
 
 export default class App {
@@ -242,6 +243,11 @@ export default class App {
       () => languageSwitcherWindow,
       () => settingsWindow,
       () => textInputWindow
+    );
+
+    new HandsOffCoding(
+        bridge,
+        chunkManager
     );
 
     // users will see an onboarding step to change these default values before using the product
