@@ -12,7 +12,7 @@ export default class HandsOffCoding {
     socket: net.Socket | null = null;
 
     constructor(
-        private bridge: RendererBridge,
+        bridge: RendererBridge,
         private chunkManager: ChunkManager
     ) {
         this.init();
@@ -24,10 +24,7 @@ export default class HandsOffCoding {
             this.socket = socket;
             socket.on('data', (data: Buffer) => {
                 this.log(`Data received: ${data.toString().trim()}`);
-                const command: string[] = data.toString().trim().split(':');
-                if (command.length < 1) {
-                    this.log(`Invalid command: ${data.toString()}`);
-                }
+                const command: string[] = data.toString().trim().split(':', 2);
                 this.execute(command);
             });
         });
@@ -42,7 +39,7 @@ export default class HandsOffCoding {
             switch (command[0]) {
                 case 'LISTENING': {
                     if (command.length < 2) {
-                        this.socket.write(`LISTENING:${this.chunkManager.listening ? 'TRUE' : 'FALSE'}`);
+                        this.socket.write(`LISTENING:${this.chunkManager.listening ? 'TRUE' : 'FALSE'}\n`);
                     } else {
                         const newState: boolean = command[1] === 'TRUE';
                         this.chunkManager.toggle(newState).then(() => {
@@ -59,9 +56,18 @@ export default class HandsOffCoding {
     }
 
     send(message: string, data: any) {
-        if (this.socket) {
-            this.log(`Sending LISTENING:${this.chunkManager.listening ? 'TRUE' : 'FALSE'}`);
-            this.socket.write(`LISTENING:${this.chunkManager.listening ? 'TRUE' : 'FALSE'}\n`);
+        try {
+            if (this.socket) {
+                if (message === "setState") {
+                    if (data.volume) {
+                        return;
+                    }
+                    this.log(`Sending state: ${JSON.stringify(data)}`);
+                    this.socket.write(`SETSTATE:${JSON.stringify(data)}\n`);
+                }
+            }
+        } catch (e) {
+            this.log(`Error sending message: ${e}`);
         }
     }
 

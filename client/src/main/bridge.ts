@@ -17,12 +17,12 @@ export default class Bridge {
   async send(message: string, data: any, windows: Receiver[]) {
     // suppress errors that might occur while closing the app
     try {
+      if (this.handsOffCoding) {
+        this.handsOffCoding.send(message, data);
+      }
       for (const e of windows) {
         if (e) {
           (await Promise.resolve(e)).send(message, data);
-          if (this.handsOffCoding) {
-            this.handsOffCoding.send(message, data);
-          }
         }
       }
     } catch (e) {}
