@@ -356,6 +356,7 @@ const AlternativesListComponent: React.FC<{
         "flex-col": !miniMode || !miniModeBottomUp || !miniModeReversed,
         "flex-col-reverse": miniMode && miniModeBottomUp && miniModeReversed,
       })}
+      style={{ pointerEvents: "none" }}
     >
       {spacer}
       <UpdateNotification />

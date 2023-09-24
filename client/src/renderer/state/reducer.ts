@@ -70,6 +70,7 @@ const initialState = {
   useVerboseLogging: false,
   updateNotification: "",
   volume: 0,
+  opacity: 1,
 };
 
 export default function reduce(state = initialState, action: any) {

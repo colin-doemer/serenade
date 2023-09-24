@@ -247,7 +247,9 @@ export default class App {
 
     new HandsOffCoding(
         bridge,
-        chunkManager
+        chunkManager,
+        mainWindow,
+        miniModeWindow
     );
 
     // users will see an onboarding step to change these default values before using the product

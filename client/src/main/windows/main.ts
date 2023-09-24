@@ -192,6 +192,10 @@ export default class MainWindow extends Window {
       this.show(true);
     });
 
+    this.window?.webContents.on("did-finish-load", () => {
+      this.window?.setIgnoreMouseEvents(true);
+    });
+
     app.on("activate", (_event: any, hasVisibleWindows: boolean) => {
       if (!hasVisibleWindows) {
         this.show();
@@ -392,5 +396,9 @@ export default class MainWindow extends Window {
 
   width(): number {
     return Math.max(this.minWidth(), this.settings.getBounds().width);
+  }
+
+  transparent(): boolean {
+    return true;
   }
 }

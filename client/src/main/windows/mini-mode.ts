@@ -38,6 +38,10 @@ export default class MiniModeWindow extends Window {
   async createWindow(bridge: RendererBridge, settings: Settings) {
     super.createWindow(bridge, settings);
 
+    this.window?.webContents.on("did-finish-load", () => {
+      this.window?.setIgnoreMouseEvents(true);
+    });
+
     if (this.window?.setWindowButtonVisibility) {
       this.window?.setWindowButtonVisibility(false);
     }

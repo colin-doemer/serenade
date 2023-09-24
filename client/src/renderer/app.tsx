@@ -24,7 +24,8 @@ const AppComponent: React.FC<{
   };
   miniMode: boolean;
   nuxCompleted: boolean;
-}> = ({ darkTheme, location, miniMode, nuxCompleted }) => {
+  opacity: number;
+}> = ({ darkTheme, location, miniMode, nuxCompleted, opacity }) => {
   // set this manually to always render a page for development
   let page = null;
   const miniModeWindow = location.pathname.endsWith("minimode");
@@ -35,6 +36,7 @@ const AppComponent: React.FC<{
         "mini-mode-window": miniModeWindow,
         transparent: miniModeWindow,
       })}
+      style={{ pointerEvents: opacity === 0 ? "none" : "auto", opacity: opacity }}
     >
       <TitleBar />
       {page ? (
@@ -63,6 +65,7 @@ const mapState = (state: any) => ({
   darkTheme: state.darkTheme,
   miniMode: state.miniMode,
   nuxCompleted: state.nuxCompleted,
+  opacity: state.opacity,
 });
 
 // @ts-ignore
